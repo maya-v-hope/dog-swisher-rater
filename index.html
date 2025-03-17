@@ -28,6 +28,7 @@
             padding: 15px;
             margin: 10px 0;
             background-color: #fff;
+            position: relative;
         }
         .rating {
             display: flex;
@@ -53,6 +54,21 @@
         }
         button:hover {
             background-color: #357abd;
+        }
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .delete-btn:hover {
+            background-color: #cc0000;
         }
         .stats {
             margin-top: 20px;
@@ -83,6 +99,7 @@
             
             const dogName = prompt('Enter dog name:') || 'Anonymous Dog';
             dogCard.innerHTML = `
+                <button class="delete-btn" onclick="deleteDog(${dogs.length})">×</button>
                 <h3>${dogName}</h3>
                 <div class="rating">
                     ${[1,2,3,4,5].map(num => `
@@ -92,6 +109,15 @@
             `;
             
             return dogCard;
+        }
+
+        function deleteDog(dogIndex) {
+            if (confirm('Are you sure you want to delete this dog?')) {
+                dogs.splice(dogIndex, 1);
+                const dogCards = document.querySelectorAll('.dog-card');
+                dogCards[dogIndex].remove();
+                updateStats();
+            }
         }
 
         function rateDog(dogIndex, rating) {
