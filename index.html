@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dog Swishiness Rater</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4a90e2;
+            text-align: center;
+        }
+        .dog-card {
+            border: 2px solid #4a90e2;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #fff;
+        }
+        .rating {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .star {
+            font-size: 24px;
+            cursor: pointer;
+            color: #ddd;
+        }
+        .star.active {
+            color: #ffd700;
+        }
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #357abd;
+        }
+        .stats {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐕 Dog Swishiness Rater 🐕</h1>
+        <div id="dog-container"></div>
+        <button onclick="addNewDog()">Add New Dog</button>
+        <div class="stats">
+            <h2>Statistics</h2>
+            <p>Average Swishiness: <span id="average-rating">0</span>/5</p>
+            <p>Total Dogs Rated: <span id="total-dogs">0</span></p>
+        </div>
+    </div>
+
+    <script>
+        let dogs = [];
+
+        function createDogCard() {
+            const dogCard = document.createElement('div');
+            dogCard.className = 'dog-card';
+            
+            const dogName = prompt('Enter dog name:') || 'Anonymous Dog';
+            dogCard.innerHTML = `
+                <h3>${dogName}</h3>
+                <div class="rating">
+                    ${[1,2,3,4,5].map(num => `
+                        <span class="star" onclick="rateDog(${dogs.length}, ${num})">★</span>
+                    `).join('')}
+                </div>
+            `;
+            
+            return dogCard;
+        }
+
+        function rateDog(dogIndex, rating) {
+            dogs[dogIndex].rating = rating;
+            updateStars(dogIndex);
+            updateStats();
+        }
+
+        function updateStars(dogIndex) {
+            const stars = document.querySelectorAll(`#dog-container .dog-card:nth-child(${dogIndex + 1}) .star`);
+            stars.forEach((star, index) => {
+                star.classList.toggle('active', index < dogs[dogIndex].rating);
+            });
+        }
+
+        function updateStats() {
+            const ratings = dogs.map(dog => dog.rating).filter(rating => rating > 0);
+            const average = ratings.length > 0 
+                ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1)
+                : 0;
+            
+            document.getElementById('average-rating').textContent = average;
+            document.getElementById('total-dogs').textContent = ratings.length;
+        }
+
+        function addNewDog() {
+            const dogCard = createDogCard();
+            document.getElementById('dog-container').appendChild(dogCard);
+            dogs.push({ rating: 0 });
+        }
+
+        // Add initial dog
+        addNewDog();
+    </script>
+</body>
+</html> 
